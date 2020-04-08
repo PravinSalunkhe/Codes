@@ -1,0 +1,270 @@
+//============================================================================
+// Name        : assign8.cpp
+// Author      : Pravin Salunkhe
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C++, Ansi-style
+//============================================================================
+/*
+ * SE-10
+ * G-10
+ * 23257
+ * PROBLEM STATEMENT:-A BUSINESS HOUSE WANTS TO ESTABLISH A CONNECTION BETWEEN THEIR DIFFERENT CENTERS IN DIFFERENT
+ * CITIES WITH MINIMUM COST. SUGGEST APPROPIATE DATA STRUCTURE FOR SOLVING THEIR PROBLEM.
+ */
+#include <iostream>
+using namespace std;
+
+class graph		//class declaration
+{
+	float **mat;	//double pointer for dynamic 2-D array allocation
+	string city[30];
+public:
+		void input(int row,int col);	//PUBLIC MEMBER FUNCTIONS
+		void display();
+		void prims(int n);
+		void scan(int n);
+};
+void graph :: scan(int n)
+{
+	for(int i=0;i<n;i++)
+	{
+		cout<<"\nCITY "<<i+1<<"::";
+		cin>>city[i];
+	}
+}
+void graph :: input(int row,int col)	//INPUT FUNCTION
+{
+	int i,j;
+	mat = new float*[row];			//MEMORY ALLOCATION FOR 2-D ARRAY
+	for(int i = 0; i < row; ++i)
+	    mat[i] = new float[col];
+
+	for(i=0;i<row;i++)
+	{
+		for(j=0;j<col;j++)
+		{
+			cout<<"\nENTER THE DISTANCE BETWEEN CITY "<<city[i]<<" AND CITY "<<city[j]<<" :-";
+			cin>>mat[i][j];			//GETTING COST BETWEEN LINKS
+			if(mat[i][j]==0)
+				mat[i][j]=32767;	//NO LINK BETWEEN THESE CITIES
+		}
+	}
+}
+
+void graph :: prims(int n)		//PRIMS ALGORITHM
+{
+	int visited[n];		//FOR CHECKING IF  NODE IS VISITED OR NOT
+	int parent[n];		//FOR KEEPING TRACK OF PARENT
+	float dist[n];			//FOR STORING DIST BETWEEN NODES
+	float mincost=0;
+	int current=0,count,i;
+	for(i=0;i<n;i++)		//INITIALIZATION
+	{
+		visited[i]=0;
+		parent[i]=-1;
+		dist[i]=32767;
+	}
+	visited[current]=1;		//START WITH FIRST VERTEX
+	count=1;
+
+	while(count<n)		//TILL VISITED VERTICES ARE LESS THAN TOTAL
+	{
+		for(i=0;i<n;i++)
+		{
+			if(mat[current][i]!=32767 && visited[i]!=1)		//CHECK IF EARLIER VISITED OR NOT
+			{
+				if(dist[i]>=mat[current][i])		//CHECK IF DIST IS LESS THAN EARLIER DIST
+				{
+					dist[i]=mat[current][i];	//CHANGE DIST
+					parent[i]=current;			//CHANGE PARENT OF THE NODE
+				}
+			}
+		}
+		mincost=32767;
+		for(i=0;i<n;i++)
+		{
+			if(visited[i]!=1 && dist[i]<mincost)	//FIND MIN-COST FROM THE CONNECTED NODES
+			{
+				mincost=dist[i];
+				current=i;
+			}
+		}
+		cout<<"\n"<<city[parent[current]]<<"\t"<<city[current]<<"\t"<<dist[current];	//DISPLAY ADDED EDGE AND VERTEX
+		visited[current]=1;		//MARK THE CURRENT EDGE AS VISITED
+		count++;
+	}
+	mincost=0;
+	for(i=0;i<n;i++)
+	{
+		if(dist[i]!=32767)
+			mincost=mincost+dist[i];		//ADD ALL THE DISTANCES
+	}
+	cout<<"\n\nMINCOST OF NETWORK CONNECTION IS "<<mincost;
+
+}
+int main()
+{
+	int ch,n;
+	graph g;	//DECLARE OBJECT OF GRAPH CLASS
+	do
+	{
+	cout<<"\nAPPLICATION OF PRIMS ALGORITHM - BUSINESS HOUSE CONNECTION\n";
+	cout<<"\nMENU\n1.ENTER CITIES\n2.FIND SHORTEST CONNECTION OF CITIES\n3.EXIT\nENTER UR CHOICE:- ";
+	cin>>ch;
+		switch(ch)
+		{
+		case 1:
+				cout<<"\nENTER THE NO OF CITIES IN THE BUSINESS HOUSE:- ";
+				cin>>n;
+				cout<<"\nenter the cities";
+				g.scan(n);
+				g.input(n,n);
+				break;
+		case 2:
+				cout<<"\n------CONNECTION DETAILS------";
+				cout<<"\nCITY1\tCITY2\tCOST FOR THE LINK THEM";
+				g.prims(n);
+				break;
+		case 3:
+				break;
+		}
+	}while(ch!=3);
+}
+/*OUTPUT:-
+
+APPLICATION OF PRIMS ALGORITHM - BUSINESS HOUSE CONNECTION
+
+MENU
+1.ENTER CITIES
+2.FIND SHORTEST CONNECTION OF CITIES
+3.EXIT
+ENTER UR CHOICE:- 1
+
+ENTER THE NO OF CITIES IN THE BUSINESS HOUSE:- 7
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 0 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 1 :-9
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 2 :-1
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 3 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 4 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 5 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 0 AND CITY 6 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 0 :-9
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 1 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 2 :-5
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 3 :-19
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 4 :-17
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 5 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 1 AND CITY 6 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 0 :-1
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 1 :-5
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 2 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 3 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 4 :-13
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 5 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 2 AND CITY 6 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 0 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 1 :-19
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 2 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 3 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 4 :-25
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 5 :-2
+
+ENTER THE DISTANCE BETWEEN CITY 3 AND CITY 6 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 0 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 1 :-17
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 2 :-13
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 3 :-25
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 4 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 5 :-14
+
+ENTER THE DISTANCE BETWEEN CITY 4 AND CITY 6 :-21
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 0 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 1 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 2 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 3 :-2
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 4 :-14
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 5 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 5 AND CITY 6 :-8
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 0 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 1 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 2 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 3 :-0
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 4 :-21
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 5 :-8
+
+ENTER THE DISTANCE BETWEEN CITY 6 AND CITY 6 :-0
+
+APPLICATION OF PRIMS ALGORITHM - BUSINESS HOUSE CONNECTION
+
+MENU
+1.ENTER CITIES
+2.FIND SHORTEST CONNECTION OF CITIES
+3.EXIT
+ENTER UR CHOICE:- 2
+
+------CONNECTION DETAILS------
+CITY1	CITY2	COST FOR THE LINK THEM
+0	2	1
+2	1	5
+2	4	13
+4	5	14
+5	3	2
+5	6	8
+
+MINCOST OF NETWORK CONNECTION IS 43
+APPLICATION OF PRIMS ALGORITHM - BUSINESS HOUSE CONNECTION
+
+MENU
+1.ENTER CITIES
+2.FIND SHORTEST CONNECTION OF CITIES
+3.EXIT
+ENTER UR CHOICE:- 3
+
+ */
